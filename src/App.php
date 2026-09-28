@@ -9,7 +9,7 @@ use PDO;
 final class App
 {
     /** Calage version (semantic versioning: major.minor.patch). */
-    public const VERSION = '1.0.0';
+    public const VERSION = '1.0.1';
     public const REPOSITORY = 'https://github.com/lehenandmartin/Calage';
 
     private static ?array $config = null;
