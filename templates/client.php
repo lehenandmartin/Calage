@@ -9,7 +9,13 @@ $number = (int) $version['number'];
         <div class="c-mail">
             <h1 class="c-subject"><?= $version['subject'] !== '' ? e($version['subject']) : e($newsletter['name']) ?></h1>
             <?php if ($version['preheader'] !== ''): ?>
-                <p class="mail-preheader"><?= e($version['preheader']) ?></p>
+                <?php // The (?) explains what a preheader is: shown on hover, keyboard focus or tap (client.css). ?>
+                <p class="mail-preheader c-preheader"><?= e($version['preheader']) ?>
+                    <span class="tip">
+                        <button class="tip-button" type="button" aria-label="<?= e(__('What is the preheader?')) ?>" aria-describedby="preheader-tip"><?= icon('question-circle') ?></button>
+                        <span class="tip-text" role="tooltip" id="preheader-tip"><?= e(__('The preheader is the short preview text that email clients show next to or below the subject, in the inbox, before the email is opened.')) ?></span>
+                    </span>
+                </p>
             <?php endif ?>
         </div>
         <div class="c-row">

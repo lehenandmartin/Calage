@@ -456,4 +456,8 @@ return [
     'This version has no subject. It is the first thing recipients read in their inbox, and a published version can no longer be changed.' => 'Cette version n’a pas d’objet. C’est la première chose que les destinataires lisent dans leur boîte de réception, et une version publiée ne peut plus être modifiée.',
     'Publish without a subject' => 'Publier sans objet',
     'Publish with this subject' => 'Publier avec cet objet',
+
+    // Share page: what is the preheader
+    'What is the preheader?' => 'Qu’est-ce que le preheader ?',
+    'The preheader is the short preview text that email clients show next to or below the subject, in the inbox, before the email is opened.' => 'Le preheader est le court texte d’aperçu que les clients mail affichent à côté ou sous l’objet, dans la boîte de réception, avant l’ouverture du mail.',
 ];
