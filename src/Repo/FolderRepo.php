@@ -39,15 +39,32 @@ final class FolderRepo
             ->execute([$name, $id]);
     }
 
-    /** Deletes an empty folder. Returns false when it still contains newsletters. */
-    public function deleteIfEmpty(int $id): bool
+    /**
+     * Deletes a folder. Its newsletters are either moved out of it (they end up without a folder) or,
+     * with $withNewsletters, deleted along with it (versions and share links; hosted images are never deleted).
+     * Returns the number of newsletters that were in the folder.
+     */
+    public function delete(int $id, bool $withNewsletters): int
     {
-        $stmt = $this->db->prepare('SELECT COUNT(*) FROM newsletters WHERE folder_id = ?');
-        $stmt->execute([$id]);
-        if ((int) $stmt->fetchColumn() > 0) {
-            return false;
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare('SELECT id FROM newsletters WHERE folder_id = ?');
+            $stmt->execute([$id]);
+            $newsletterIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+            if ($withNewsletters) {
+                $newsletters = new NewsletterRepo($this->db);
+                foreach ($newsletterIds as $newsletterId) {
+                    $newsletters->delete($newsletterId);
+                }
+            } else {
+                $this->db->prepare('UPDATE newsletters SET folder_id = NULL WHERE folder_id = ?')->execute([$id]);
+            }
+            $this->db->prepare('DELETE FROM folders WHERE id = ?')->execute([$id]);
+            $this->db->commit();
+        } catch (\Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
         }
-        $this->db->prepare('DELETE FROM folders WHERE id = ?')->execute([$id]);
-        return true;
+        return count($newsletterIds);
     }
 }

@@ -86,7 +86,6 @@ return [
     'Newsletters' => 'Newsletters',
     'Give the folder a name.' => 'Donnez un nom au dossier.',
     'Folder renamed.' => 'Dossier renommé.',
-    'This folder still contains newsletters: move or delete them first.' => 'Ce dossier contient encore des newsletters : déplacez-les ou supprimez-les d’abord.',
     'Folder “{name}” deleted.' => 'Dossier « {name} » supprimé.',
 
     // Share page
@@ -202,9 +201,7 @@ return [
     'Rename folder' => 'Renommer le dossier',
     'Rename' => 'Renommer',
     'Delete the folder “{name}”?' => 'Supprimer le dossier « {name} » ?',
-    'The folder must be empty' => 'Le dossier doit être vide',
     'Delete folder' => 'Supprimer le dossier',
-    'It must be empty first.' => 'Il doit d’abord être vide.',
     'No results' => 'Aucun résultat',
     'No newsletter matches “{query}”. The search looks at the name, folder, subject and preheader.' => 'Aucune newsletter ne correspond à « {query} ». La recherche porte sur le nom, le dossier, l’objet et le preheader.',
     'This folder is empty' => 'Ce dossier est vide',
@@ -458,4 +455,15 @@ return [
     // Share page: what is the preheader
     'What is the preheader?' => 'Qu’est-ce que le preheader ?',
     'The preheader is the short preview text that email clients show next to or below the subject, in the inbox, before the email is opened.' => 'Le preheader est le court texte d’aperçu que les clients mail affichent à côté ou sous l’objet, dans la boîte de réception, avant l’ouverture du mail.',
+
+    // Deleting a folder that is not empty
+    'Delete folder…' => 'Supprimer le dossier…',
+    'It contains one newsletter. What should happen to it?' => ['Il contient une newsletter. Que doit-elle devenir ?', 'Il contient {n} newsletters. Que doivent-elles devenir ?'],
+    'Delete the folder, keep the newsletter' => ['Supprimer le dossier, garder la newsletter', 'Supprimer le dossier, garder les newsletters'],
+    'They move to “No folder”; their share links keep working.' => 'Elles passent dans « Sans dossier » ; leurs liens de partage continuent de fonctionner.',
+    'Delete the folder and its newsletter' => ['Supprimer le dossier et sa newsletter', 'Supprimer le dossier et ses {n} newsletters'],
+    'Versions and share links are deleted for good. Images in emails already sent stay online.' => 'Les versions et les liens de partage sont supprimés définitivement. Les images des mails déjà envoyés restent en ligne.',
+    'Choose what happens to the newsletters of this folder.' => 'Choisissez ce que deviennent les newsletters de ce dossier.',
+    'Folder “{name}” deleted, with its newsletter.' => ['Dossier « {name} » supprimé, avec sa newsletter.', 'Dossier « {name} » supprimé, avec ses {n} newsletters.'],
+    'Folder “{name}” deleted. Its newsletter is now without a folder.' => ['Dossier « {name} » supprimé. Sa newsletter est maintenant sans dossier.', 'Dossier « {name} » supprimé. Ses {n} newsletters sont maintenant sans dossier.'],
 ];

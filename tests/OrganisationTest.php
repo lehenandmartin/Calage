@@ -7,7 +7,7 @@ use Calage\Repo\NewsletterRepo;
 use Calage\Repo\VersionRepo;
 use Calage\Storage\ImageStore;
 
-test('folders: create, rename, filter, delete only when empty', function (): void {
+test('folders: create, rename, filter, delete', function (): void {
     [$db, $id] = imported();
     $folders = new FolderRepo($db);
     $newsletters = new NewsletterRepo($db);
@@ -21,15 +21,31 @@ test('folders: create, rename, filter, delete only when empty', function (): voi
     check_same([], $newsletters->all(0), 'nothing left without a folder');
     check_same('Client A', $newsletters->all()[0]['folder_name']);
 
-    check(!$folders->deleteIfEmpty($clientA), 'folder not empty: refused');
-    check($folders->find($clientA) !== null);
-
     $folders->rename($clientA, 'Client A (2026)');
     check_same('Client A (2026)', $folders->find($clientA)['name']);
 
-    $newsletters->move($id, null);
-    check($folders->deleteIfEmpty($clientA));
-    check_same(null, $folders->find($clientA));
+    check_same(0, $folders->delete($folders->create('Empty'), false), 'empty folder');
+});
+
+test('folders: deleting a folder that is not empty keeps or deletes its newsletters', function (): void {
+    [$db, $id] = imported();
+    $folders = new FolderRepo($db);
+    $newsletters = new NewsletterRepo($db);
+    $imageCount = (int) $db->query('SELECT COUNT(*) FROM images')->fetchColumn();
+
+    $keep = $folders->create('Keep');
+    $newsletters->move($id, $keep);
+    check_same(1, $folders->delete($keep, false));
+    check_same(null, $folders->find($keep));
+    check_same(null, $newsletters->find($id)['folder_id'], 'newsletter kept, without a folder');
+
+    $gone = $folders->create('Gone');
+    $newsletters->move($id, $gone);
+    $token = $newsletters->find($id)['token'];
+    check_same(1, $folders->delete($gone, true));
+    check_same([null, null, null], [$folders->find($gone), $newsletters->find($id), $newsletters->findByToken($token)], 'folder, newsletter and share link deleted');
+    check_same(0, (int) $db->query('SELECT COUNT(*) FROM versions')->fetchColumn(), 'versions deleted');
+    check_same($imageCount, (int) $db->query('SELECT COUNT(*) FROM images')->fetchColumn(), 'hosted images kept');
 });
 
 test('duplicate: starts from the latest published one, as a draft, new link, same folder', function (): void {

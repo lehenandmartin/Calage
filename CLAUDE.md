@@ -268,7 +268,8 @@ folder: `php -S localhost:8000 -t . calage/index.php`).
   the SMTP dialogue is shown with credentials hidden. Warning when `base_url` is local (recipients would not
   see the images). Tests: `tests/fake-smtp.php` is a fake SMTP server started by `tests/MailerTest.php`.
 - Organization: folders sorted by name, dashboard filter `/?folder=id` (`0` = no folder).
-  A folder can only be deleted when empty. An import started from a folder files the newsletter there
+  Deleting a folder that is not empty opens a dialog: keep its newsletters (they end up without a folder)
+  or delete them with it (`FolderRepo::delete()`, in one transaction; hosted images kept). An empty folder: simple confirmation. An import started from a folder files the newsletter there
   (can be changed when confirming). Rename / move / duplicate / delete through the "More actions" menu of the newsletter page.
 - Duplicate: new newsletter (name "Copy of …", same folder, new token) whose **draft**
   takes the latest published version (failing that, the draft): HTML, subject, preheader, images.

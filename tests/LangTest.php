@@ -68,7 +68,13 @@ test('translation: French texts keep the same placeholders', function (): void {
     foreach (['fr.php', 'fr-js.php'] as $file) {
         foreach (require APP_ROOT . '/src/lang/' . $file as $english => $french) {
             foreach ((array) $french as $variant) {
-                check_same(placeholders($english), placeholders($variant), "$file: “{$english}”");
+                // In a plural, {n} may be left out ("its newsletter" rather than "its 1 newsletter").
+                $ignore = is_array($french) ? ['n'] : [];
+                check_same(
+                    array_values(array_diff(placeholders($english), $ignore)),
+                    array_values(array_diff(placeholders($variant), $ignore)),
+                    "$file: “{$english}”"
+                );
             }
         }
     }

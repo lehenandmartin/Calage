@@ -5,6 +5,7 @@ namespace Calage\Controllers;
 
 use Calage\App;
 use Calage\Repo\FolderRepo;
+use Calage\Repo\NewsletterRepo;
 use Calage\Session;
 use Calage\View;
 
@@ -35,11 +36,20 @@ final class FolderController
     public function delete(array $params): void
     {
         $folder = $this->folder($params);
-        if (!(new FolderRepo(App::db()))->deleteIfEmpty((int) $folder['id'])) {
-            Session::flash('error', __('This folder still contains newsletters: move or delete them first.'));
-            redirect('/?folder=' . $folder['id']);
+        $id = (int) $folder['id'];
+        // A folder that is not empty: the dialog says what happens to its newsletters (keep or delete).
+        $mode = (string) ($_POST['newsletters'] ?? '');
+        $count = count((new NewsletterRepo(App::db()))->all($id));
+        if ($count > 0 && !in_array($mode, ['keep', 'delete'], true)) {
+            Session::flash('error', __('Choose what happens to the newsletters of this folder.'));
+            redirect('/?folder=' . $id);
         }
-        Session::flash('success', __('Folder “{name}” deleted.', ['name' => $folder['name']]));
+        $count = (new FolderRepo(App::db()))->delete($id, $mode === 'delete');
+        Session::flash('success', match (true) {
+            $count === 0 => __('Folder “{name}” deleted.', ['name' => $folder['name']]),
+            $mode === 'delete' => __n('Folder “{name}” deleted, with its newsletter.', 'Folder “{name}” deleted, with its {n} newsletters.', $count, ['name' => $folder['name']]),
+            default => __n('Folder “{name}” deleted. Its newsletter is now without a folder.', 'Folder “{name}” deleted. Its {n} newsletters are now without a folder.', $count, ['name' => $folder['name']]),
+        });
         redirect('/');
     }
 

@@ -44,13 +44,16 @@ $count = count($newsletters);
                             <button class="btn" type="submit"><?= e(__('Rename')) ?></button>
                         </form>
                         <hr>
-                        <form method="post" action="<?= e(url('/folders/' . $folder['id'] . '/delete')) ?>"
-                              data-confirm="<?= e(__('Delete the folder “{name}”?', ['name' => $folder['name']])) ?>">
-                            <?= csrf_field() ?>
-                            <button class="menu-item danger" type="submit" <?= $count > 0 ? 'disabled title="' . e(__('The folder must be empty')) . '"' : '' ?>>
-                                <?= icon('delete') ?><span><?= e(__('Delete folder')) ?><?php if ($count > 0): ?><small><?= e(__('It must be empty first.')) ?></small><?php endif ?></span>
-                            </button>
-                        </form>
+                        <?php if ($count === 0): ?>
+                            <form method="post" action="<?= e(url('/folders/' . $folder['id'] . '/delete')) ?>"
+                                  data-confirm="<?= e(__('Delete the folder “{name}”?', ['name' => $folder['name']])) ?>">
+                                <?= csrf_field() ?>
+                                <button class="menu-item danger" type="submit"><?= icon('delete') ?><?= e(__('Delete folder')) ?></button>
+                            </form>
+                        <?php else: ?>
+                            <?php // Not empty: the dialog below asks what happens to the newsletters. ?>
+                            <button class="menu-item danger" type="button" data-dialog="delete-folder-dialog"><?= icon('delete') ?><?= e(__('Delete folder…')) ?></button>
+                        <?php endif ?>
                     </div>
                 </details>
             <?php endif ?>
@@ -114,5 +117,36 @@ $count = count($newsletters);
         </ul>
     <?php endif ?>
 </div>
+
+<?php if ($folder !== null && $count > 0 && $search === ''): ?>
+    <dialog class="dialog" id="delete-folder-dialog" aria-labelledby="delete-folder-title">
+        <form method="post" action="<?= e(url('/folders/' . $folder['id'] . '/delete')) ?>" class="form">
+            <?= csrf_field() ?>
+            <h2 id="delete-folder-title"><?= e(__('Delete the folder “{name}”?', ['name' => $folder['name']])) ?></h2>
+            <p class="muted"><?= e(__n(
+                'It contains one newsletter. What should happen to it?',
+                'It contains {n} newsletters. What should happen to them?',
+                $count
+            )) ?></p>
+            <div class="stack">
+                <button class="btn" type="submit" name="newsletters" value="keep"><?= icon('folder-arrow-right') ?><?= e(__n(
+                    'Delete the folder, keep the newsletter',
+                    'Delete the folder, keep the newsletters',
+                    $count
+                )) ?></button>
+                <p class="small muted"><?= e(__('They move to “No folder”; their share links keep working.')) ?></p>
+                <button class="btn btn-danger" type="submit" name="newsletters" value="delete"><?= icon('delete') ?><?= e(__n(
+                    'Delete the folder and its newsletter',
+                    'Delete the folder and its {n} newsletters',
+                    $count
+                )) ?></button>
+                <p class="small muted"><?= e(__('Versions and share links are deleted for good. Images in emails already sent stay online.')) ?></p>
+            </div>
+            <div class="actions" style="justify-content: flex-end">
+                <button class="btn" type="submit" formmethod="dialog" formnovalidate value="cancel"><?= e(__('Cancel')) ?></button>
+            </div>
+        </form>
+    </dialog>
+<?php endif ?>
 
 <div data-probe="<?= e(url('/data/probe.txt')) ?>"></div>

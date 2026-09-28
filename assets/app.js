@@ -38,7 +38,11 @@
         // Open a dialog: data-dialog="id".
         if (target && target.hasAttribute('data-dialog')) {
             var dialog = document.getElementById(target.getAttribute('data-dialog'));
-            if (dialog && dialog.showModal) { dialog.showModal(); }
+            if (dialog && dialog.showModal) {
+                // The menu that opened the dialog closes behind it.
+                document.querySelectorAll('details.menu[open]').forEach(function (menu) { menu.removeAttribute('open'); });
+                dialog.showModal();
+            }
             return;
         }
 
