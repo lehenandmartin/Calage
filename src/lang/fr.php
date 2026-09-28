@@ -258,7 +258,6 @@ return [
     'Preview width' => 'Largeur de l’aperçu',
     'Desktop' => 'Ordinateur',
     'Mobile' => 'Mobile',
-    'Browser preview: the display may differ in Outlook or Gmail.' => 'Aperçu navigateur : l’affichage peut varier dans Outlook ou Gmail.',
     'Newsletter preview' => 'Aperçu de la newsletter',
     'Share link' => 'Lien de partage',
     'Share link address' => 'Adresse du lien de partage',
@@ -367,7 +366,6 @@ return [
     'Download the zip' => 'Télécharger le zip',
     'You are viewing an older version.' => 'Vous consultez une ancienne version.',
     'See the latest one' => 'Voir la plus récente',
-    'Preview in the browser: the display may differ in Outlook, Gmail or on mobile.' => 'Aperçu dans le navigateur : l’affichage peut varier dans Outlook, Gmail ou sur mobile.',
     'Shared with {calage}' => 'Partagé avec {calage}',
 
     // SMTP fields

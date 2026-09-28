@@ -62,7 +62,6 @@ $number = (int) $version['number'];
     <div class="c-frame" id="c-stage">
         <iframe id="client-frame" src="<?= e(url("/c/$token/v/$number/render")) ?>" sandbox title="<?= e(__('Newsletter preview')) ?>"></iframe>
     </div>
-    <p class="c-note"><?= e(__('Preview in the browser: the display may differ in Outlook, Gmail or on mobile.')) ?></p>
     <p class="c-foot"><?php require __DIR__ . '/partials/mark.php' ?><?= __h('Shared with {calage}', ['calage' => '<a href="' . e(Calage\App::REPOSITORY) . '" target="_blank" rel="noopener">Calage</a>']) ?></p>
 </main>
 

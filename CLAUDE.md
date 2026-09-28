@@ -79,8 +79,8 @@ customizing the share page, dark mode preview, multiple users.
 - One link per newsletter, with a long random token (never an incremental ID).
 - Shows the **latest published version** by default. A picker gives access to earlier versions.
 - Header: subject, preheader, version number.
-- 900 px preview by default, 375 px mobile switch. Discreet note: browser preview,
-  not an Outlook or Gmail rendering.
+- 900 px preview by default, 375 px mobile switch. No "browser preview, may differ in Outlook or Gmail"
+  note (removed on purpose: it did not help).
 - Zip download (HTML with relative paths + `images/`).
 - Drafts are never visible on the share page.
 

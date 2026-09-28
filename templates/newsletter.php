@@ -132,7 +132,6 @@ $back = $newsletter['folder_id'] === null ? '/' : '/?folder=' . $newsletter['fol
                     <button type="button" aria-pressed="false" data-device="mobile"><?= icon('phone') ?><?= e(__('Mobile')) ?></button>
                 </div>
                 <?php $degradeFrame = '#preview-frame'; $degradeRight = false; require __DIR__ . '/partials/degrade.php'; ?>
-                <span class="preview-note"><?= e(__('Browser preview: the display may differ in Outlook or Gmail.')) ?></span>
             </div>
             <div class="stage" id="stage">
                 <iframe id="preview-frame" src="<?= e(url('/versions/' . $shown['id'] . '/render')) ?>" sandbox title="<?= e(__('Newsletter preview')) ?>"></iframe>
