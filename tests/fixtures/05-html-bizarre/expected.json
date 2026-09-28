@@ -1,0 +1,9 @@
+{
+    "html": "newsletter.html",
+    "images": {
+        "Images/Photo.jpg": ["found", "Images/Photo.jpg", "exact", 1],
+        "images/photo.jpg": ["found", "Images/Photo.jpg", "case", 6]
+    },
+    "external": 0,
+    "ignored": 0
+}

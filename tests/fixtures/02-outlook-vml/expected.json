@@ -1,0 +1,11 @@
+{
+    "html": "newsletter.html",
+    "images": {
+        "img/bandeau.jpg": ["found", "img/bandeau.jpg", "exact", 2],
+        "img/bouton-outlook.png": ["found", "img/bouton-outlook.png", "exact", 1],
+        "img/bouton.png": ["found", "img/bouton.png", "exact", 1],
+        "img/Signature.PNG": ["found", "img/signature.png", "case", 1]
+    },
+    "external": 0,
+    "ignored": 0
+}

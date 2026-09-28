@@ -1,0 +1,7 @@
+/config.php
+/data/*
+!/data/.htaccess
+!/data/probe.txt
+/i/*
+!/i/.htaccess
+.DS_Store

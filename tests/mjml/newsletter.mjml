@@ -1,0 +1,40 @@
+<mjml>
+  <mj-head>
+    <mj-title>Rentrée 2026</mj-title>
+    <mj-preview>Nouvelles tablettes et coffrets dès le 1er octobre</mj-preview>
+    <mj-font name="Lato" href="https://fonts.googleapis.com/css?family=Lato" />
+    <mj-style>
+      .encart { background-image: url('images/fond.png'); }
+    </mj-style>
+  </mj-head>
+  <mj-body>
+    <mj-section background-url="images/fond.png">
+      <mj-column>
+        <mj-image src="images/logo.png" alt="Maison Dupont" width="200px" />
+        <mj-text font-family="Lato">La rentrée se savoure <img src="images/pixel.gif" alt="" width="1" height="1"></mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-hero background-url="images/hero.jpg" background-height="300px" background-width="600px" mode="fixed-height" height="300px">
+      <mj-text>Nouvelles tablettes</mj-text>
+    </mj-hero>
+    <mj-section>
+      <mj-column>
+        <mj-carousel>
+          <mj-carousel-image src="images/Photo%20Produit.png" thumbnails-src="images/vignette.jpg" alt="Tablette" />
+        </mj-carousel>
+        <mj-accordion icon-wrapped-url="icones/plus.png" icon-unwrapped-url="icones/moins.png">
+          <mj-accordion-element>
+            <mj-accordion-title>Ateliers</mj-accordion-title>
+            <mj-accordion-text>Dès le 1er octobre.</mj-accordion-text>
+          </mj-accordion-element>
+        </mj-accordion>
+        <mj-social>
+          <mj-social-element name="facebook" href="https://facebook.com/maisondupont">Facebook</mj-social-element>
+          <mj-social-element src="images/logo.png" href="https://maisondupont.fr">Site</mj-social-element>
+        </mj-social>
+      </mj-column>
+    </mj-section>
+    <mj-raw><img src="images/absente.png" alt="Absente"></mj-raw>
+    <mj-include path="./pied-de-page.mjml" />
+  </mj-body>
+</mjml>

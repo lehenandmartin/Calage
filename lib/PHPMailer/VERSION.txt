@@ -1,0 +1,5 @@
+PHPMailer 7.1.1 — https://github.com/PHPMailer/PHPMailer (licence LGPL-2.1, voir LICENSE)
+Archive : https://github.com/PHPMailer/PHPMailer/archive/refs/tags/v7.1.1.tar.gz
+sha256 de l'archive : 6c8210a20f2bdca42f398ea688042a17c572a52369449e80f5bf6ec7fbfce3e5
+Seuls src/PHPMailer.php, src/SMTP.php et src/Exception.php sont embarqués (pas d'OAuth, pas de POP3).
+Mise à jour : remplacer ces trois fichiers par ceux de la nouvelle version.

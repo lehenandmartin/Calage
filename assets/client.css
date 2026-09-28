@@ -1,0 +1,39 @@
+/* Share page: same visual family as the back office, without anything of the tool. */
+body.client { height: auto; min-height: 100%; }
+.c-head { background: var(--surface); border-bottom: 1px solid var(--stroke); }
+.c-inner { max-width: 1040px; margin: 0 auto; padding: 20px 24px 16px; display: grid; gap: 14px; }
+.c-shared { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+.c-shared .icon { color: var(--brand); }
+.c-shared strong { color: var(--ink); font-weight: 600; }
+.c-mail { display: grid; gap: 8px; max-width: 75ch; }
+.c-subject { font-size: 24px; line-height: 1.25; overflow-wrap: anywhere; }
+.c-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; }
+.c-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.c-tools form, .mail-meta form { margin: 0; }
+/* Version chip doubling as the picker (several published versions). */
+.chip-select {
+    appearance: none; field-sizing: content; min-height: 24px; padding: 0 26px 0 10px; border: 0; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 20 20'%3E%3Cpath fill='%23333' d='M15.85 7.65a.5.5 0 0 1 0 .7l-5.5 5.5a.5.5 0 0 1-.7 0l-5.5-5.5a.5.5 0 1 1 .7-.7L10 12.79l5.15-5.14a.5.5 0 0 1 .7 0'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 9px center;
+}
+.chip-select:hover { filter: brightness(.96); }
+.chip-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.c-old { max-width: 1040px; margin: 0 auto; padding: 0 24px 16px; }
+.c-stage { max-width: 1040px; margin: 0 auto; padding: 20px 24px 40px; padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
+.c-frame { padding: 28px 16px; background: var(--stage); border-radius: var(--r-panel); overflow-x: auto; }
+.c-frame iframe {
+    display: block; width: min(900px, 100%); height: calc(100vh - 240px); min-height: 560px; margin: 0 auto;
+    border: 0; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / .1); transition: width .25s var(--ease-out);
+}
+.c-frame.is-mobile iframe { width: min(375px, 100%); }
+.c-note { margin-top: 10px; text-align: center; font-size: 12px; color: var(--ink-2); }
+.c-foot { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 18px; font-size: 12px; color: var(--ink-3); }
+.c-foot svg { width: 14px; height: 14px; }
+.c-foot a { color: inherit; }
+.c-foot a:hover { color: var(--brand); }
+@media (max-width: 760px) {
+    .c-inner { padding: 16px; }
+    .c-subject { font-size: 20px; }
+    .c-old, .c-stage { padding-left: 16px; padding-right: 16px; }
+    .c-frame { padding: 12px 8px; }
+}

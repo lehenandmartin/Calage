@@ -1,0 +1,32 @@
+# Calage: this file goes at the root of the application,
+# whether it sits at the root of the domain or in a subfolder.
+DirectoryIndex index.php
+
+# No script or technical file can be reached directly, except index.php.
+<FilesMatch "(\.(php\d?|phtml|phar|sql|sqlite|sqlite-wal|sqlite-shm|md|log)$)|(^\.)">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+<Files "index.php">
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Allow from all
+    </IfModule>
+</Files>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Internal folders: forbidden, even when the requested file exists.
+    RewriteRule ^(src|templates|lib|data|bin|tests)(/|$) - [F,L]
+    # Anything that is not a real file (assets/, i/) goes through index.php.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>

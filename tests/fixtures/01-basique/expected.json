@@ -1,0 +1,12 @@
+{
+    "html": "newsletter.html",
+    "images": {
+        "images/hero.jpg": ["found", "images/hero.jpg", "exact", 3],
+        "images/fond.png": ["found", "images/fond.png", "exact", 3],
+        "images/logo.png": ["found", "images/logo.png", "exact", 3],
+        "images/logo@2x.png": ["found", "images/logo@2x.png", "exact", 1],
+        "images/pixel.gif": ["found", "images/pixel.gif", "exact", 1]
+    },
+    "external": 0,
+    "ignored": 1
+}

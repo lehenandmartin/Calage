@@ -1,0 +1,15 @@
+{
+    "html": "emails/campagne/newsletter.html",
+    "images": {
+        "../../images/Mon%20Image.jpg": ["found", "images/Mon Image.jpg", "exact", 1],
+        "./photos/%C3%A9t%C3%A9.png": ["found", "emails/campagne/photos/été.png", "exact", 1],
+        "..\\..\\IMAGES\\Logo.JPG": ["found", "images/logo.jpg", "case", 1],
+        "../../images/pixel.gif?v=3#x": ["found", "images/pixel.gif", "exact", 1],
+        "../../images/a&amp;b.png": ["found", "images/a&b.png", "exact", 1],
+        "/images/racine.png": ["found", "images/racine.png", "exact", 1],
+        "../../../../images/trop-haut.png": ["found", "images/trop-haut.png", "exact", 1],
+        "bannière.jpg": ["found", "images/bannière.jpg", "name", 1]
+    },
+    "external": 0,
+    "ignored": 0
+}

@@ -1,0 +1,10 @@
+{
+    "html": "newsletter.html",
+    "images": {
+        "images/absente.png": ["missing", null, null, 1],
+        "images/vecteur.svg": ["unsupported", "images/vecteur.svg", "exact", 1],
+        "images/faux.jpg": ["found", "images/faux.jpg", "exact", 1]
+    },
+    "external": 6,
+    "ignored": 2
+}

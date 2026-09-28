@@ -1,0 +1,2 @@
+Ce fichier ne doit PAS être lisible depuis le web.
+S'il l'est, le dossier data/ (base de données comprise) est exposé.

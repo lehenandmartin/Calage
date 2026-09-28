@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Basique</title>
+<style type="text/css">
+  .hero { background-image: url('images/hero.jpg'); }
+  .fond { background: #fff url(images/fond.png) no-repeat; }
+  @font-face { font-family: Marque; src: url(fonts/marque.woff2) format("woff2"); }
+</style>
+</head>
+<body style="margin:0; background:url(&quot;images/fond.png&quot;)">
+<!-- Ancien visuel, à supprimer : <img src="images/ancien.jpg"> -->
+<table width="600" background="images/fond.png">
+  <tr>
+    <td background='images/hero.jpg' style="background-image: url( 'images/hero.jpg' );">
+      <img src="images/logo.png" alt="Logo" width="200">
+      <img src="images/logo.png" srcset="images/logo.png 1x, images/logo@2x.png 2x" alt="">
+      <img src=images/pixel.gif alt="">
+      <a href="images/hero.jpg">Lien vers une image : pas une image affichée</a>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
