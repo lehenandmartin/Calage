@@ -205,7 +205,9 @@ final class NewsletterController
         $newsletter = $this->newsletter($params);
         (new NewsletterRepo(App::db()))->delete((int) $newsletter['id']);
         Session::flash('success', __('“{name}” deleted. Its share link no longer works.', ['name' => $newsletter['name']]));
-        redirect($newsletter['folder_id'] === null ? '/' : '/?folder=' . $newsletter['folder_id']);
+        // From the list: back to that list (only the dashboard, with its query). Otherwise: the newsletter's folder.
+        $back = (string) ($_POST['back'] ?? '');
+        redirect(preg_match('#^/(\?[\w%.=&+-]*)?$#', $back) ? $back : ($newsletter['folder_id'] === null ? '/' : '/?folder=' . $newsletter['folder_id']));
     }
 
     /** Sender of the previews (smtp config), shown as in a received email. */

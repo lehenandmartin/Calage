@@ -466,4 +466,7 @@ return [
     'Choose what happens to the newsletters of this folder.' => 'Choisissez ce que deviennent les newsletters de ce dossier.',
     'Folder “{name}” deleted, with its newsletter.' => ['Dossier « {name} » supprimé, avec sa newsletter.', 'Dossier « {name} » supprimé, avec ses {n} newsletters.'],
     'Folder “{name}” deleted. Its newsletter is now without a folder.' => ['Dossier « {name} » supprimé. Sa newsletter est maintenant sans dossier.', 'Dossier « {name} » supprimé. Ses {n} newsletters sont maintenant sans dossier.'],
+
+    // Deleting from the list
+    'Delete {name}' => 'Supprimer {name}',
 ];

@@ -4,6 +4,7 @@ use Calage\App;
 
 $showFolder = $filter === null;
 $count = count($newsletters);
+$listPath = '/' . ($search !== '' ? '?q=' . rawurlencode($search) : ($filter !== null ? '?folder=' . $filter : ''));
 ?>
 <div class="page">
     <div class="stack" style="margin-bottom: 16px">
@@ -108,6 +109,15 @@ $count = count($newsletters);
                                 <?= csrf_field() ?>
                                 <button class="btn btn-ghost btn-icon" type="submit" title="<?= e(__('Duplicate')) ?>">
                                     <?= icon('document-copy') ?><span class="visually-hidden"><?= e(__('Duplicate {name}', ['name' => $n['name']])) ?></span>
+                                </button>
+                            </form>
+                            <form method="post" action="<?= e(url('/newsletters/' . $n['id'] . '/delete')) ?>"
+                                  data-confirm="<?= e(__('Permanently delete “{name}” and all its versions? The share link will stop working. Images in emails already sent stay online.', ['name' => $n['name']])) ?>">
+                                <?= csrf_field() ?>
+                                <?php // Back to this very list (all, folder or search) once deleted. ?>
+                                <input type="hidden" name="back" value="<?= e($listPath) ?>">
+                                <button class="btn btn-ghost btn-icon btn-danger" type="submit" title="<?= e(__('Delete newsletter')) ?>">
+                                    <?= icon('delete') ?><span class="visually-hidden"><?= e(__('Delete {name}', ['name' => $n['name']])) ?></span>
                                 </button>
                             </form>
                         </div>
