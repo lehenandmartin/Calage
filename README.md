@@ -7,6 +7,8 @@
   <img src="https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white" alt="PHP 8.1+">
 </p>
 
+<img width="1920" height="781" alt="Screenshot of Calage" src="https://github.com/user-attachments/assets/f741c9cf-2a76-445c-9837-622756058313" />
+
 ---
 
 Sending an HTML newsletter to someone for review usually means a zip they have to unpack, an HTML file that opens without its images, or images you first have to upload somewhere. With Calage, you upload the HTML or MJML (a file, a folder or a zip) once: the images are hosted, and you get a link that shows the newsletter as it will look, on desktop and mobile. Each new version appears on the same link.
