@@ -2,7 +2,7 @@
 /**
  * Editable settings (they rewrite config.php through SettingsController).
  * @var bool $writable  @var string $locale  @var string $baseUrl  @var string $detectedBaseUrl  @var bool $localBaseUrl
- * @var string $username  @var array $smtp  @var bool $hasSmtpPassword  @var bool $smtpConfigured  @var array<string, string> $errors
+ * @var bool $showShareDates  @var string $username  @var array $smtp  @var bool $hasSmtpPassword  @var bool $smtpConfigured  @var array<string, string> $errors
  */
 require_once __DIR__ . '/partials/field-error.php';
 $disabled = $writable ? '' : ' disabled';
@@ -47,6 +47,19 @@ $disabled = $writable ? '' : ' disabled';
                         <p class="bar-body"><?= e(__('Local address: share links and images in emails will only work on this machine.')) ?></p></div>
                 <?php endif ?>
                 <div class="panel-actions"><button class="btn btn-primary" type="submit"><?= e(__('Save the address')) ?></button></div>
+            </fieldset>
+        </form>
+
+        <form method="post" action="<?= e(url('/settings/share-page')) ?>" class="panel panel-lg stack" aria-labelledby="share-title">
+            <?= csrf_field() ?>
+            <h2 id="share-title" class="panel-title"><?= icon('link') ?><?= e(__('Share page')) ?></h2>
+            <fieldset class="stack"<?= $disabled ?>>
+                <label class="choice">
+                    <input type="checkbox" name="hide_dates" value="1" <?= $showShareDates ? '' : 'checked' ?>>
+                    <span><?= e(__('Hide the publication dates')) ?>
+                        <span class="hint"><?= e(__('for example “published today at 14:15” next to the version number')) ?></span></span>
+                </label>
+                <div class="panel-actions"><button class="btn btn-primary" type="submit"><?= e(__('Save the share page settings')) ?></button></div>
             </fieldset>
         </form>
 

@@ -52,14 +52,18 @@ $cdn = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/';
             </div>
             <div class="compose-field">
                 <label for="preheader"><?= e(__('Preheader')) ?></label>
-                <?php // Empty field = preheader generated from the content on save; the current generated text is shown as the placeholder. ?>
-                <input type="text" id="preheader" name="preheader" value="<?= e(Calage\Repo\VersionRepo::userPreheader($current)) ?>" maxlength="500"
-                       placeholder="<?= e((int) $current['preheader_auto'] === 1 && $current['preheader'] !== ''
-                           ? __('Automatic: {text}', ['text' => $current['preheader']])
-                           : __('Left empty: the start of the email text, like an email client shows it')) ?>"
-                       <?= $isMjml ? 'aria-describedby="preheader-sync"' : '' ?>>
                 <?php if ($isMjml): ?>
+                    <?php // Empty field = preheader generated from the content on save; the current generated text is shown as the placeholder. ?>
+                    <input type="text" id="preheader" name="preheader" value="<?= e(Calage\Repo\VersionRepo::userPreheader($current)) ?>" maxlength="500"
+                           placeholder="<?= e((int) $current['preheader_auto'] === 1 && $current['preheader'] !== ''
+                               ? __('Automatic: {text}', ['text' => $current['preheader']])
+                               : __('Left empty: the start of the email text, like an email client shows it')) ?>"
+                           aria-describedby="preheader-sync">
                     <span class="compose-hint" id="preheader-sync" title="<?= e(__('Changing this field updates the <mj-preview> tag of the MJML (added if needed), and the other way round.')) ?>"><?= __h('linked to {tag}', ['tag' => '<code>&lt;mj-preview&gt;</code>']) ?></span>
+                <?php else: ?>
+                    <?php // HTML newsletter: Calage never changes the uploaded code, so the preheader is read from it. ?>
+                    <input type="text" id="preheader" value="<?= e($current['preheader']) ?>" readonly aria-describedby="preheader-from-code">
+                    <span class="compose-hint" id="preheader-from-code" title="<?= e(__('The preheader of an HTML newsletter comes from its code: the hidden block at the top of the email, or else the start of its text. Change it in the code.')) ?>"><?= e(__('from the code')) ?></span>
                 <?php endif ?>
             </div>
             <?php if (!$isMjml): ?>

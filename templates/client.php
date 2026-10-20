@@ -1,5 +1,6 @@
 <?php
-/** @var array $newsletter  @var array $version  @var list<array> $versions  @var bool $isLatest  @var string $sharedBy */
+/** @var array $newsletter  @var array $version  @var list<array> $versions  @var bool $isLatest  @var string $sharedBy
+ *  @var bool $showDates  publication dates shown (Settings → Share page) */
 $token = $newsletter['token'];
 $number = (int) $version['number'];
 ?>
@@ -37,7 +38,9 @@ $number = (int) $version['number'];
                 <?php else: ?>
                     <span class="chip <?= $chipClass ?>"><?= e($isLatest ? __('Version {n} · latest', ['n' => $number]) : __('Version {n}', ['n' => $number])) ?></span>
                 <?php endif ?>
-                <span><?= e(__('published {date}', ['date' => long_date($version['published_at'])])) ?></span>
+                <?php if ($showDates): ?>
+                    <span><?= e(__('published {date}', ['date' => long_date($version['published_at'])])) ?></span>
+                <?php endif ?>
             </div>
             <div class="c-tools">
                 <div class="seg" role="group" aria-label="<?= e(__('Preview width')) ?>" data-stage="#c-stage">

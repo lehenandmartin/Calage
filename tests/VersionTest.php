@@ -102,7 +102,9 @@ test('new version: the HTML alone takes the images of the current version', func
 
     $draftId = $importer->createVersion($package, 'newsletter.html', $id);
     $draft = $versions->find($draftId);
-    check_same(['Objet', 'Preheader', $html], [$draft['subject'], $draft['preheader'], $draft['html']]);
+    // Uploaded HTML: never altered; its preheader is read from its code (here the start of its text).
+    check_same(['Objet', 'Lien vers une image : pas une image affichée', 1], [$draft['subject'], $draft['preheader'], (int) $draft['preheader_auto']]);
+    check_same($html, $draft['html'], 'HTML untouched');
     check_same($previous, $versions->hashes($draftId), 'same images, nothing more');
 });
 
@@ -181,4 +183,34 @@ test('versions: subject entered right before publishing, on the draft only', fun
     check_same(['New subject', 'Preheader', 1], [$published['subject'], $published['preheader'], (int) $published['number']]);
     $versions->setDraftSubject($draftId, 'Too late');
     check_same('New subject', $versions->find($draftId)['subject'], 'a published version is not changed');
+});
+
+test('versions: subject edited in place on an HTML version, even once published, without a new version or touching the HTML', function (): void {
+    $db = temp_db();
+    $versions = new VersionRepo($db);
+    $id = (new Calage\Repo\NewsletterRepo($db))->create('N', null);
+    $versionId = $versions->createDraft($id, '<body><p>Body text</p></body>', 'Old subject', '', []);
+    $versions->publish($id);
+    $before = $versions->find($versionId);
+
+    // HTML newsletter: the subject changes; the preheader stays the one read from the code, the HTML is untouched.
+    $after = $versions->updateHeader($versionId, 'New subject', 'Ignored preheader');
+    check_same(['New subject', 'Body text', 1], [$after['subject'], $after['preheader'], (int) $after['preheader_auto']]);
+    check_same([$before['html'], $before['number'], 'published'], [$after['html'], $after['number'], $after['status']], 'HTML, number and status untouched');
+    check_same(1, count($versions->forNewsletter($id)), 'no new version');
+    check_same(null, $versions->updateHeader(999, 'x', 'y'));
+});
+
+test('versions: preheader edited in place on an MJML version goes into <mj-preview> and the compiled HTML', function (): void {
+    $db = temp_db();
+    $versions = new VersionRepo($db);
+    $id = (new Calage\Repo\NewsletterRepo($db))->create('N', null);
+    $mjml = file_get_contents(__DIR__ . '/mjml/newsletter.mjml');
+    $html = file_get_contents(__DIR__ . '/mjml/compiled.html');
+    $versionId = $versions->createDraft($id, $html, 'Subject', 'Nouvelles tablettes et coffrets dès le 1er octobre', [], $mjml);
+
+    $after = $versions->updateHeader($versionId, 'Subject', 'Offres de rentrée');
+    check_same('Offres de rentrée', Calage\Mjml::preview($after['mjml']));
+    check_same('Offres de rentrée', Calage\Html\PreheaderBlock::read($after['html']));
+    check_same(['Subject', 'Offres de rentrée'], [$after['subject'], $after['preheader']]);
 });

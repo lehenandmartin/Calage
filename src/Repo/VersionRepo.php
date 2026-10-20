@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Calage\Repo;
 
+use Calage\Html\PreheaderBlock;
 use Calage\Html\PreviewText;
+use Calage\Mjml;
 use PDO;
 
 /**
@@ -182,6 +184,37 @@ final class VersionRepo
     }
 
     /** Sets the subject of a draft only (subject entered right before publishing). */
+    /**
+     * Changes the subject and preheader of a version, draft or published, without creating a new version.
+     * MJML: the preheader is written into <mj-preview> and the compiled HTML (an empty one is removed and then
+     * generated from the content). HTML: the uploaded code is never altered, so only the subject changes.
+     * Returns the updated version, or null when it does not exist.
+     */
+    public function updateHeader(int $versionId, string $subject, string $preheader): ?array
+    {
+        $version = $this->find($versionId);
+        if ($version === null) {
+            return null;
+        }
+        $html = $version['html'];
+        $mjml = $version['mjml'];
+        if ($mjml === null) {
+            // HTML newsletter: the uploaded code is never altered, the preheader stays the one read from it.
+            $preheader = self::userPreheader($version);
+        } elseif ($preheader !== self::userPreheader($version)) {
+            // MJML: the preheader goes into <mj-preview> and into the HTML compiled from it.
+            $mjml = Mjml::setPreview($mjml, $preheader);
+            $html = PreheaderBlock::set($html, $preheader);
+        }
+        [$preheader, $auto] = self::preheader($preheader, $html);
+        $this->db->prepare(
+            'UPDATE versions SET subject = ?, preheader = ?, preheader_auto = ?, html = ?, mjml = ?,
+                    updated_at = strftime(\'%Y-%m-%dT%H:%M:%SZ\', \'now\') WHERE id = ?'
+        )->execute([$subject, $preheader, $auto, $html, $mjml, $versionId]);
+        $this->touchNewsletter((int) $version['newsletter_id']);
+        return $this->find($versionId);
+    }
+
     public function setDraftSubject(int $versionId, string $subject): void
     {
         $this->db->prepare('UPDATE versions SET subject = ? WHERE id = ? AND status = \'draft\'')->execute([$subject, $versionId]);

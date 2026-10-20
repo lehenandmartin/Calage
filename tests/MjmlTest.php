@@ -80,10 +80,24 @@ test('mjml: on import, the preheader comes from <mj-preview>, including for a ne
     $versions->publish($id);
     $new = $versions->find($importer->createVersion(mjml_package(), 'newsletter.mjml', $id));
     check_same(['Objet', 'Nouvelles tablettes et coffrets dès le 1er octobre'], [$new['subject'], $new['preheader']]);
-    // Without <mj-preview> (HTML file), the preheader of the current version (here the published v1) is kept.
+    // HTML file: never altered, its preheader is read from its code (here the start of its text).
     $versions->discardDraft($id);
-    $new = $versions->find($importer->createVersion(fixture_package('01-basique'), 'newsletter.html', $id));
-    check_same('Ancien preheader', $new['preheader']);
+    $package = fixture_package('01-basique');
+    $new = $versions->find($importer->createVersion($package, 'newsletter.html', $id));
+    check_same(['Lien vers une image : pas une image affichée', 1], [$new['preheader'], (int) $new['preheader_auto']]);
+    check_same($package->read('newsletter.html'), $new['html'], 'uploaded HTML untouched');
+
+    // MJML without <mj-preview>: the preheader of the current version, set by hand, goes into the new code.
+    $versions->updateDraft((int) $new['id'], $new['html'], 'Objet', 'Ancien preheader');
+    $versions->publish($id);
+    $package = mjml_package();
+    $source = (string) preg_replace('#\s*<mj-preview>.*?</mj-preview>#s', '', $package->read('newsletter.mjml'));
+    $tmp = temp_dir() . '/newsletter.mjml';
+    file_put_contents($tmp, $source);
+    $package->addFile('newsletter.mjml', $tmp);
+    $package->setCompiled('newsletter.mjml', (string) preg_replace('#<div style="display:none;[^>]*>[^<]*</div>#', '', file_get_contents(__DIR__ . '/mjml/compiled.html')), [], Mjml::VERSION);
+    $new = $versions->find($importer->createVersion($package, 'newsletter.mjml', $id));
+    check_same(['Ancien preheader', 'Ancien preheader', 'Ancien preheader'], [$new['preheader'], Mjml::preview($new['mjml']), Calage\Html\PreheaderBlock::read($new['html'])]);
 });
 
 test('mjml: <mj-include> found (ignored by the compilation in the browser)', function (): void {

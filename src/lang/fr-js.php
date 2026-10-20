@@ -53,4 +53,14 @@ return [
     'Up to date' => 'À jour',
     'Updating…' => 'Mise à jour…',
     'Compilation error' => 'Erreur de compilation',
+
+    // Subject and preheader edited in place (inline-header.js)
+    'Automatic: {text}' => 'Automatique : {text}',
+    'Subject' => 'Objet',
+    'Preheader' => 'Preheader',
+    'No preheader was entered: this is the start of the email text, as an email client shows it. Double-click to write one.' => 'Aucun preheader n’a été saisi : c’est le début du texte du mail, tel que l’affiche un client mail. Double-cliquez pour en écrire un.',
+    'Double-click to edit the preheader' => 'Double-cliquez pour modifier le preheader',
+    'Subject saved.' => 'Objet enregistré.',
+    'Preheader saved.' => 'Preheader enregistré.',
+    'Could not save. Reload the page and try again.' => 'Enregistrement impossible. Rechargez la page et réessayez.',
 ];

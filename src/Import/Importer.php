@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Calage\Import;
 
 use Calage\Html\ImageScanner;
+use Calage\Html\PreheaderBlock;
 use Calage\Html\PathResolver;
 use Calage\Mjml;
 use Calage\Repo\NewsletterRepo;
@@ -81,15 +82,8 @@ final class Importer
         $this->db->beginTransaction();
         try {
             $newsletterId = (new NewsletterRepo($this->db))->create($name, $folderId);
-            $mjml = self::mjml($package, $htmlPath);
-            (new VersionRepo($this->db))->createDraft(
-                $newsletterId,
-                $report['html'],
-                '',
-                ($mjml !== null ? Mjml::preview($mjml) : null) ?? '',
-                $map,
-                $mjml
-            );
+            [$html, $mjml, $preheader] = self::preheader($report['html'], self::mjml($package, $htmlPath), '');
+            (new VersionRepo($this->db))->createDraft($newsletterId, $html, '', $preheader, $map, $mjml);
             $this->db->commit();
         } catch (\Throwable $e) {
             $this->db->rollBack();
@@ -111,17 +105,34 @@ final class Importer
         $report = self::analyze($package, $htmlPath, $previous);
         $map = $this->storeImages($package, $report);
 
-        // Preheader: the one from <mj-preview> when filled in, otherwise the one of the current version
-        // ('' when it was generated from the content: it is then generated again from the new content).
-        $mjml = self::mjml($package, $htmlPath);
-        return $versions->replaceDraft(
-            $newsletterId,
+        [$html, $mjml, $preheader] = self::preheader(
             $report['html'],
-            $current['subject'] ?? '',
-            ($mjml !== null ? Mjml::preview($mjml) : null) ?? ($current === null ? '' : VersionRepo::userPreheader($current)),
-            $map,
-            $mjml
+            self::mjml($package, $htmlPath),
+            $current === null ? '' : VersionRepo::userPreheader($current)
         );
+        return $versions->replaceDraft($newsletterId, $html, $current['subject'] ?? '', $preheader, $map, $mjml);
+    }
+
+    /**
+     * Preheader of an imported version, kept in line with the code. HTML file: never altered, the preheader is
+     * read from it ('' = automatic: its hidden preheader block, or else the start of its text). MJML: <mj-preview>
+     * wins; otherwise $inherited (the preheader of the current version, set by hand) is written into
+     * <mj-preview> and the compiled HTML.
+     * @return array{0: string, 1: ?string, 2: string} [html, mjml, preheader]
+     */
+    private static function preheader(string $html, ?string $mjml, string $inherited): array
+    {
+        if ($mjml === null) {
+            return [$html, null, ''];
+        }
+        $inCode = Mjml::preview($mjml);
+        if ($inCode !== null) {
+            return [$html, $mjml, $inCode];
+        }
+        if ($inherited === '') {
+            return [$html, $mjml, ''];
+        }
+        return [PreheaderBlock::set($html, $inherited), Mjml::setPreview($mjml, $inherited), $inherited];
     }
 
     /**

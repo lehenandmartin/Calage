@@ -75,6 +75,7 @@ final class ClientController
             'version' => $version,
             'versions' => $list,
             'isLatest' => (int) $version['number'] === (int) $list[0]['number'],
+            'showDates' => SettingsController::showShareDates(),
             'sharedBy' => trim((string) (App::config()['smtp']['from_name'] ?? '')),
         ], 'client-layout');
     }

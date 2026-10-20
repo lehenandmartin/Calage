@@ -29,7 +29,8 @@ A single account, on the agency side. Recipients have no account.
 
 Out of scope for now (do not implement): client approval, comments, automatic checks
 (Gmail weight, `alt`, links), release notes, view tracking, link revocation or expiry,
-customizing the share page, dark mode preview, multiple users.
+further customizing of the share page (only the option to hide publication dates exists), dark mode preview,
+multiple users.
 
 ### Back office (session-protected)
 
@@ -55,12 +56,18 @@ customizing the share page, dark mode preview, multiple users.
 - Image referenced but missing: warning shown, not blocking.
 - Image present but not referenced: ignored.
 - **Rewriting by targeted text replacement**: paths are located, then replaced in the original string.
-  The HTML must come out byte-for-byte identical, except for the image paths.
+  The HTML must come out byte-for-byte identical, except for the image paths. An uploaded HTML is never
+  altered otherwise (only the HTML compiled from MJML gets its preheader updated, see "Preheader in the code").
   `DOMDocument` removes conditional comments and "fixes" deliberately odd structures: forbidden.
 
 **Versions**
 - Two states: **draft** (freely editable), then **published** (frozen). The "Publish" button freezes the version,
   gives it the next number and makes it visible on the share page. Drafts have no number.
+- Exception (decided): the **subject and preheader** of any version, published ones included, can be edited in
+  place on the newsletter page (double-click, or Enter / F2 when focused; `assets/inline-header.js`,
+  `POST /versions/{id}/header`, `VersionRepo::updateHeader()`), without creating a new version. The preheader is
+  editable for MJML newsletters only (it goes into the code, see below); for an HTML newsletter it is read from
+  the code and only the subject can be edited. An emptied preheader becomes automatic again.
 - New version by editing the code in a built-in editor (CodeMirror, loaded from a CDN) or by uploading
   a new file.
 - Each version has a **subject** and a **preheader**. A new version automatically takes those
@@ -78,7 +85,8 @@ customizing the share page, dark mode preview, multiple users.
 
 - One link per newsletter, with a long random token (never an incremental ID).
 - Shows the **latest published version** by default. A picker gives access to earlier versions.
-- Header: subject, preheader, version number.
+- Header: subject, preheader, version number, publication date (hidden when Settings → Share page →
+  "Hide the publication dates" is checked: `config.php` → `share_page.hide_dates`).
 - 900 px preview by default, 375 px mobile switch. No "browser preview, may differ in Outlook or Gmail"
   note (removed on purpose: it did not help).
 - Zip download (HTML with relative paths + `images/`).
@@ -130,6 +138,7 @@ return [
         'from_email' => 'newsletters@your-domain.com',
         'from_name' => 'My agency',
     ],
+    'share_page' => ['hide_dates' => false],
     'paths' => [
         'database' => __DIR__ . '/data/app.sqlite',
         'tmp'      => __DIR__ . '/data/tmp',
@@ -148,7 +157,7 @@ email" → summary). It writes `config.php` (`ConfigFile`: atomic write, 0640 pe
 it shows the content to upload over FTP. No install key (a deliberate choice, like WordPress):
 run the setup right after uploading the files. `bin/hash-password.php` remains for manual setup.
 
-**Editable settings** (`SettingsController`): language, public address, account (current password required;
+**Editable settings** (`SettingsController`): language, public address, share page (hide the publication dates), account (current password required;
 new password optional), SMTP (password left empty = unchanged, never shown again; test
 with the values as entered before saving). Read-only when PHP cannot modify `config.php`.
 
@@ -294,6 +303,17 @@ folder: `php -S localhost:8000 -t . calage/index.php`).
   (migration step 3) marks it: it is recomputed on every save and import, and stays automatic in copies
   (`VersionRepo::userPreheader()`). The editor shows the field empty with the generated text as placeholder;
   typing a preheader makes it manual. The HTML is never modified.
+- Preheader and code (decided): the preheader never disagrees with the code, and an uploaded HTML is never altered.
+  - HTML newsletter: the preheader is not editable in Calage (read-only in the editor and on the newsletter page).
+    It is always read from the code, as an email client does: the hidden preheader block at the top of the body,
+    or else the start of the text (`preheader_auto` = 1, `Html\PreviewText`). To change it, change the code.
+  - MJML newsletter: the preheader is editable (editor field, double-click) and written into `<mj-preview>`
+    (`Mjml::setPreview()`, same rules as `previewEdit()` in `assets/mjml.js`) and into the HTML compiled from it
+    (`Html\PreheaderBlock::set()`: replaces the text of the hidden block at the top of the body, style and
+    padding kept; adds one right after `<body>` when missing; removes it for an empty preheader; targeted
+    replacement, never a DOM parser). In the editor, `assets/mjml.js` syncs the field and `<mj-preview>` while typing.
+  - Import: HTML file → preheader read from it; MJML → `<mj-preview>` wins, otherwise the preheader of the current
+    version, set by hand, is written into `<mj-preview>` and the compiled HTML.
 - Editor: `EditableText` restores on save the original encoding (UTF-8 / Windows-1252), BOM and
   line endings (a `<textarea>` always sends back UTF-8 with CRLF). Unchanged text
   → original bytes. CodeMirror 5 from cdnjs with SRI; without the CDN, the `<textarea>` still works.

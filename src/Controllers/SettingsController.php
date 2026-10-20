@@ -13,7 +13,7 @@ use Calage\Settings;
 use Calage\View;
 
 /**
- * Settings page: language, public address, account, email sending. Changes rewrite config.php
+ * Settings page: language, public address, share page, account, email sending. Changes rewrite config.php
  * (see ConfigFile); when PHP cannot write it, the settings are shown read-only.
  */
 final class SettingsController
@@ -42,6 +42,17 @@ final class SettingsController
             return;
         }
         $this->save(['base_url' => $baseUrl], __('Public address saved.'));
+    }
+
+    public function saveSharePage(array $params): void
+    {
+        $this->save(['share_page' => ['hide_dates' => isset($_POST['hide_dates'])]], __('Share page settings saved.'));
+    }
+
+    /** Share page: are the publication dates of the versions shown? (config.php → share_page.hide_dates) */
+    public static function showShareDates(): bool
+    {
+        return !((bool) (App::rawConfig()['share_page']['hide_dates'] ?? false));
     }
 
     public function saveAccount(array $params): void
@@ -141,6 +152,7 @@ final class SettingsController
             'detectedBaseUrl' => App::detectedBaseUrl(),
             'localBaseUrl' => self::isLocalBaseUrl(),
             'username' => $values['username'] ?? (string) ($config['admin']['username'] ?? ''),
+            'showShareDates' => self::showShareDates(),
             'smtp' => $smtp + ['host' => '', 'port' => 587, 'encryption' => 'tls', 'username' => '', 'from_email' => '', 'from_name' => ''],
             'hasSmtpPassword' => (string) ($config['smtp']['password'] ?? '') !== '',
             'smtpConfigured' => Mailer::fromConfig()->isConfigured(),

@@ -63,6 +63,7 @@ $r->post('/newsletters/{id}/duplicate', [NewsletterController::class, 'duplicate
 $r->post('/newsletters/{id}/delete', [NewsletterController::class, 'delete']);
 $r->get('/versions/{id}/render', [VersionController::class, 'render']);
 $r->post('/versions/{id}/restore', [VersionController::class, 'restore']);
+$r->post('/versions/{id}/header', [VersionController::class, 'updateHeader']);
 $r->get('/versions/{id}/export.zip', [ExportController::class, 'zip']);
 $r->get('/versions/{id}/export.html', [ExportController::class, 'html']);
 $r->get('/versions/{id}/export-mjml.zip', [ExportController::class, 'mjmlZip']);
@@ -73,6 +74,7 @@ $r->post('/versions/{id}/send', [MailController::class, 'sendPreview']);
 $r->get('/settings', [SettingsController::class, 'show']);
 $r->post('/settings/language', [SettingsController::class, 'saveLanguage']);
 $r->post('/settings/address', [SettingsController::class, 'saveAddress']);
+$r->post('/settings/share-page', [SettingsController::class, 'saveSharePage']);
 $r->post('/settings/account', [SettingsController::class, 'saveAccount']);
 $r->post('/settings/smtp', [SettingsController::class, 'saveSmtp']);
 $r->post('/settings/smtp-test', [SettingsController::class, 'smtpTest']);

@@ -444,7 +444,6 @@ return [
     // Automatic preheader
     'Automatic: {text}' => 'Automatique : {text}',
     'Left empty: the start of the email text, like an email client shows it' => 'Vide : le début du texte du mail, comme l’affiche un client mail',
-    'No preheader was entered: this is the start of the email text, as an email client shows it. It is updated on every save.' => 'Aucun preheader n’a été saisi : c’est le début du texte du mail, tel que l’affiche un client mail. Il est mis à jour à chaque enregistrement.',
 
     // Subject dialog (publication)
     'Publish without a subject?' => 'Publier sans objet ?',
@@ -469,4 +468,21 @@ return [
 
     // Deleting from the list
     'Delete {name}' => 'Supprimer {name}',
+
+    // Settings: share page
+    'Share page' => 'Page de partage',
+    'Hide the publication dates' => 'Masquer les dates de publication',
+    'for example “published today at 14:15” next to the version number' => 'par exemple « publiée aujourd’hui à 14:15 » à côté du numéro de version',
+    'Save the share page settings' => 'Enregistrer les réglages de la page de partage',
+    'Share page settings saved.' => 'Réglages de la page de partage enregistrés.',
+
+    // Subject and preheader edited in place
+    'Double-click to edit the subject' => 'Double-cliquez pour modifier l’objet',
+    'Double-click to edit the preheader' => 'Double-cliquez pour modifier le preheader',
+    'Add a preheader' => 'Ajouter un preheader',
+    'No preheader was entered: this is the start of the email text, as an email client shows it. Double-click to write one.' => 'Aucun preheader n’a été saisi : c’est le début du texte du mail, tel que l’affiche un client mail. Double-cliquez pour en écrire un.',
+
+    // HTML newsletter: preheader read from the code
+    'The preheader of an HTML newsletter comes from its code: the hidden block at the top of the email, or else the start of its text. Change it in the code.' => 'Le preheader d’une newsletter HTML vient de son code : le bloc caché en haut du mail, ou à défaut le début de son texte. Modifiez-le dans le code.',
+    'from the code' => 'tiré du code',
 ];

@@ -100,10 +100,14 @@ final class NewsletterController
         }
         $source = $isMjml ? $current['mjml'] : $current['html'];
 
+        // HTML newsletter: the preheader is read from the code, never set in Calage (the uploaded HTML is not altered).
+        if (!$isMjml) {
+            $preheader = '';
+        }
         // Nothing changed on a published version: no needless draft.
         if ($current !== null && $current['status'] === 'published'
             && EditableText::fromEditor($text, $source) === $source
-            && $subject === $current['subject'] && $preheader === VersionRepo::userPreheader($current)) {
+            && $subject === $current['subject'] && (!$isMjml || $preheader === VersionRepo::userPreheader($current))) {
             Session::flash('success', __('No changes.'));
             redirect('/newsletters/' . $id . (isset($_POST['then_show']) ? '' : '/edit'));
         }

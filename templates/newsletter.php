@@ -91,11 +91,25 @@ $back = $newsletter['folder_id'] === null ? '/' : '/?folder=' . $newsletter['fol
     <article class="reading">
         <?php if ($shown !== null): ?>
             <header class="mail-head">
-                <div class="mail-title">
-                    <h1 class="mail-subject"><?= $shown['subject'] !== '' ? e($shown['subject']) : '<span class="not-set">' . e(__('No subject')) . '</span>' ?></h1>
-                    <?php // Preheader right under the subject, in grey and without a label, as an email client shows it. ?>
-                    <?php if ($shown['preheader'] !== ''): ?>
-                        <p class="mail-preheader"<?= (int) $shown['preheader_auto'] === 1 ? ' title="' . e(__('No preheader was entered: this is the start of the email text, as an email client shows it. It is updated on every save.')) . '"' : '' ?>><?= e($shown['preheader']) ?></p>
+                <?php
+                // Subject and preheader: double-click (or Enter when focused) to edit them in place, without
+                // creating a new version (assets/inline-header.js). Preheader under the subject, in grey and
+                // without a label, as an email client shows it; when automatic, the field starts empty.
+                $preheaderAuto = (int) $shown['preheader_auto'] === 1;
+                ?>
+                <div class="mail-title" data-header-url="<?= e(url('/versions/' . $shown['id'] . '/header')) ?>"
+                     data-csrf="<?= e(Calage\Csrf::token()) ?>" data-is-draft="<?= $shown['status'] === 'draft' ? '1' : '0' ?>">
+                    <h1 class="mail-subject" data-edit="subject" data-value="<?= e($shown['subject']) ?>" data-max="250"
+                        data-placeholder="<?= e(__('No subject')) ?>" tabindex="0" title="<?= e(__('Double-click to edit the subject')) ?>"><?= $shown['subject'] !== '' ? e($shown['subject']) : '<span class="not-set">' . e(__('No subject')) . '</span>' ?></h1>
+                    <?php if ($shown['mjml'] !== null): ?>
+                        <p class="mail-preheader" data-edit="preheader" data-value="<?= e(Calage\Repo\VersionRepo::userPreheader($shown)) ?>" data-max="500"
+                           data-placeholder="<?= e(__('Add a preheader')) ?>" data-auto="<?= $preheaderAuto ? '1' : '0' ?>" tabindex="0"
+                           title="<?= e($preheaderAuto
+                               ? __('No preheader was entered: this is the start of the email text, as an email client shows it. Double-click to write one.')
+                               : __('Double-click to edit the preheader')) ?>"><?= $shown['preheader'] !== '' ? e($shown['preheader']) : '<span class="not-set">' . e(__('Add a preheader')) . '</span>' ?></p>
+                    <?php elseif ($shown['preheader'] !== ''): ?>
+                        <?php // HTML newsletter: the uploaded code is never altered, so the preheader is read from it, not edited here. ?>
+                        <p class="mail-preheader" title="<?= e(__('The preheader of an HTML newsletter comes from its code: the hidden block at the top of the email, or else the start of its text. Change it in the code.')) ?>"><?= e($shown['preheader']) ?></p>
                     <?php endif ?>
                 </div>
                 <div class="mail-meta">
@@ -225,3 +239,4 @@ $back = $newsletter['folder_id'] === null ? '/' : '/?folder=' . $newsletter['fol
 
 <?php if ($hasDraft) { require __DIR__ . '/partials/subject-dialog.php'; } ?>
 <script src="<?= e(url('/assets/preview.js')) ?>" defer></script>
+<script src="<?= e(url('/assets/inline-header.js')) ?>" defer></script>
