@@ -18,7 +18,7 @@ final class App
 
     public static function init(): void
     {
-        $file = APP_ROOT . '/config.php';
+        $file = self::configPath();
         if (is_file($file)) {
             $config = require $file;
             self::$config = is_array($config) ? $config : null;
@@ -33,6 +33,16 @@ final class App
             $dir = dirname($_SERVER['SCRIPT_NAME'] ?? '/');
         }
         self::$basePath = rtrim(str_replace('\\', '/', $dir), '/.');
+    }
+
+    /**
+     * Location of config.php: next to index.php, unless the CALAGE_CONFIG environment variable
+     * points elsewhere (Docker: inside the data/ volume, so the file survives the container).
+     */
+    public static function configPath(): string
+    {
+        $path = getenv('CALAGE_CONFIG');
+        return is_string($path) && $path !== '' ? $path : APP_ROOT . '/config.php';
     }
 
     /** True when config.php exists and defines an admin account. */

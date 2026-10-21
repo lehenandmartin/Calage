@@ -1,0 +1,17 @@
+# Calage with Docker Compose: docker compose up -d, then open http://localhost:8080
+services:
+  calage:
+    build: .
+    image: calage:latest
+    restart: unless-stopped
+    ports:
+      - "${CALAGE_PORT:-8080}:80"
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+    volumes:
+      - calage-data:/var/www/html/data # database, config.php, temporary files
+      - calage-images:/var/www/html/i  # hosted images: never delete them
+
+volumes:
+  calage-data:
+  calage-images:

@@ -6,8 +6,8 @@ namespace Calage;
 /**
  * Writes config.php for the setup wizard and the Settings page.
  *
- * The file stays a readable, commented PHP array that can be edited by hand. Paths inside the
- * application are written relative to it (__DIR__ . '/data/…') so it can be moved;
+ * The file stays a readable, commented PHP array that can be edited by hand. Paths below its
+ * folder are written relative to it (__DIR__ . '/data/…') so it can be moved;
  * any key added by hand is kept.
  */
 final class ConfigFile
@@ -30,7 +30,7 @@ final class ConfigFile
 
     public static function forApp(): self
     {
-        return new self(APP_ROOT . '/config.php', APP_ROOT);
+        return new self(App::configPath(), APP_ROOT);
     }
 
     /** Can PHP create or modify config.php? */
@@ -101,9 +101,10 @@ final class ConfigFile
             }
             return "[\n" . implode("\n", $lines) . "\n" . str_repeat('    ', $depth) . ']';
         }
-        // Path inside the application: relative, so the folder can be moved.
-        if (is_string($value) && str_starts_with($value, $this->appRoot . '/')) {
-            return '__DIR__ . ' . var_export(substr($value, strlen($this->appRoot)), true);
+        // Path below the folder of config.php: relative, so the folder can be moved.
+        $dir = dirname($this->path);
+        if (is_string($value) && str_starts_with($value, $dir . '/')) {
+            return '__DIR__ . ' . var_export(substr($value, strlen($dir)), true);
         }
         return var_export($value, true);
     }

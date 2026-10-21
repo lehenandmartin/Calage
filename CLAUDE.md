@@ -147,6 +147,9 @@ return [
 ];
 ```
 
+`config.php` sits next to `index.php`; only the `CALAGE_CONFIG` environment variable can move it (`App::configPath()`,
+used by the Docker image to keep it in the `data/` volume). Paths below its folder are written relative to it.
+
 Images are not configurable: they live in `i/` at the root of the application,
 to be served statically at `{base_url}/i/{hash}.{ext}`.
 
@@ -226,7 +229,13 @@ lib/         bundled PHPMailer
 data/        app.sqlite, tmp/ (sessions, chunked uploads/, pending imports/, exports/)
 bin/         CLI scripts (hash-password.php)
 tests/       run.php + fixtures/
+Dockerfile  compose.yaml  docker/   optional Docker deployment (PHP + Apache, volumes data/ and i/)
 ```
+
+Docker (optional, decided): it must never become a requirement; shared hosting stays the reference. The image
+uses Apache with the same `.htaccess` files, the code is read-only for PHP, `data/` and `i/` are volumes,
+`CALAGE_CONFIG=/var/www/html/data/config.php`. `docker/entrypoint.sh` puts back the `.htaccess` / `probe.txt` of
+an empty bind mount.
 
 Tests: `php tests/run.php` (with a filter: `php tests/run.php paths`). Each folder of
 `tests/fixtures/` is an import: `expected.json` describes the expected images, `expected.html` the HTML
