@@ -1,5 +1,5 @@
 #!/bin/sh
-# Calage: prepares the data/ and i/ volumes, then starts Apache.
+# Calage: prepares the mounted data/ and i/ folders, then starts Apache.
 set -e
 
 root=/var/www/html

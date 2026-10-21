@@ -25,7 +25,7 @@ COPY docker/apache.conf /etc/apache2/conf-enabled/calage.conf
 
 # Code owned by root, read-only for PHP; only data/ and i/ are writable (see the entrypoint).
 COPY . /var/www/html/
-# The .htaccess and probe files of data/ and i/, put back by the entrypoint when a fresh volume hides them.
+# The .htaccess and probe files of data/ and i/, put back by the entrypoint when an empty mounted folder hides them.
 RUN rm -rf /var/www/html/docker \
     && chown root:root /var/www/html && chmod 755 /var/www/html \
     && chown www-data:www-data /var/www/html/data /var/www/html/i \
@@ -36,7 +36,7 @@ RUN rm -rf /var/www/html/docker \
 COPY docker/entrypoint.sh /usr/local/bin/calage-entrypoint
 RUN chmod +x /usr/local/bin/calage-entrypoint
 
-# config.php lives in the data/ volume, so the setup wizard and the Settings page survive a new container.
+# config.php lives in the mounted data/ folder, so the setup wizard and the Settings page survive a new container.
 ENV CALAGE_CONFIG=/var/www/html/data/config.php
 
 VOLUME ["/var/www/html/data", "/var/www/html/i"]

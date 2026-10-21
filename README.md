@@ -68,7 +68,7 @@ The name comes from printing: *calage* is the final press adjustment before the 
 - Runs on basic shared Apache hosting, uploaded over FTP
 - No Composer, no Node, no build step: dependencies are included
 - Install at the root of a domain or in a subfolder (`domain.com/calage`)
-- Or run it with Docker: a ready-made image (PHP + Apache), data kept in volumes
+- Or run it with Docker: a ready-made image (PHP + Apache), data kept in the `data/` and `i/` folders
 
 ### Languages
 - Interface in English and French, chosen in the Settings (the setup wizard follows the browser and offers a language picker)
@@ -117,16 +117,16 @@ The repository includes a `Dockerfile` (PHP 8.4 + Apache, the same `.htaccess` r
 
 To use another port, set `CALAGE_PORT` (in the shell or in a `.env` file next to `compose.yaml`): `CALAGE_PORT=8000 docker compose up -d`. `TZ` sets the system time zone of the container; the dates shown by Calage follow the time zone of `config.php`.
 
-**What is kept, and where.** Two volumes hold everything that is not code:
+**What is kept, and where.** Everything that is not code stays in two folders of the checkout, mounted into the container, as on shared hosting:
 
-| Volume | Mounted on | Content |
-|---|---|---|
-| `calage-data` | `/var/www/html/data` | `config.php`, the SQLite database, temporary files (sessions, uploads) |
-| `calage-images` | `/var/www/html/i` | hosted images: never delete them, emails already sent point to them |
+| Folder | Content |
+|---|---|
+| `data/` | `config.php`, the SQLite database (`app.sqlite`), temporary files (sessions, uploads) |
+| `i/` | hosted images: never delete them, emails already sent point to them |
 
-In the image, `config.php` is written to `data/` instead of next to `index.php` (the `CALAGE_CONFIG` environment variable points to it), so the setup and the Settings survive a new container. The code is read-only for PHP; only `data/` and `i/` are writable.
+They are ignored by git, so `git pull` never touches them. In the image, `config.php` is written to `data/` instead of next to `index.php` (the `CALAGE_CONFIG` environment variable points to it), so the setup and the Settings survive a new container. The code is read-only for PHP; only `data/` and `i/` are writable. On start, the container puts back their `.htaccess` files if they are missing and gives the folders to the `www-data` user (uid 33): on a Linux server, `sudo` may be needed to edit their files from the host.
 
-To keep the files in folders of your choice rather than in Docker volumes, replace the volumes with bind mounts in `compose.yaml`, e.g. `./storage/data:/var/www/html/data` and `./storage/i:/var/www/html/i`. Empty folders are fine: on start, the container puts back their `.htaccess` files and gives them to the `www-data` user.
+To keep them elsewhere (another disk, a backed-up folder), change the left-hand side of the two `volumes` lines in `compose.yaml`, e.g. `/srv/calage/data:/var/www/html/data`.
 
 **HTTPS and reverse proxy.** The container speaks plain HTTP. Put it behind your usual reverse proxy (Caddy, Traefik, nginx…) that handles the certificate, and serve it at the root of a domain or subdomain: the subfolder install (`domain.com/calage`) is meant for shared hosting, not for the container. The proxy must pass the `Host` header and `X-Forwarded-Proto: https` (Calage relies on it for secure session cookies) and accept large enough requests (upload chunks go up to 4 MB; e.g. `client_max_body_size 64m;` with nginx). Example with Caddy:
 ```
@@ -140,17 +140,16 @@ calage.your-domain.com {
 git pull
 docker compose up -d --build
 ```
-The volumes are kept and the database migrates itself on the next page load.
+`data/` and `i/` are kept and the database migrates itself on the next page load.
 
-**Backup.** Save both volumes, e.g. while the container is stopped:
+**Backup.** Save the `data/` and `i/` folders, e.g. while the container is stopped (the database is in WAL mode: a copy taken while it is running may miss the latest changes):
 ```bash
 docker compose stop
-docker run --rm -v calage_calage-data:/data -v calage_calage-images:/i -v "$PWD":/backup alpine tar czf /backup/calage-backup.tar.gz /data /i
+tar czf calage-backup.tar.gz data i
 docker compose start
 ```
-(The volume names are prefixed with the Compose project name, by default the folder name: `docker volume ls` lists them.)
 
-**Logs and commands.** `docker compose logs -f` shows the Apache and PHP logs. Commands run inside the container, e.g. `docker compose exec calage php bin/hash-password.php` to generate a password hash. To edit `config.php` by hand, copy it out and back: `docker compose cp calage:/var/www/html/data/config.php .`, then `docker compose cp config.php calage:/var/www/html/data/config.php` and give it back to PHP with `docker compose exec calage chown www-data:www-data data/config.php` (the Settings page covers the usual changes).
+**Logs and commands.** `docker compose logs -f` shows the Apache and PHP logs. Commands run inside the container, e.g. `docker compose exec calage php bin/hash-password.php` to generate a password hash. To edit `config.php` by hand, open `data/config.php` (the Settings page covers the usual changes).
 
 ### Updating
 

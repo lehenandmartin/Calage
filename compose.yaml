@@ -9,9 +9,6 @@ services:
     environment:
       TZ: ${TZ:-Europe/Paris}
     volumes:
-      - calage-data:/var/www/html/data # database, config.php, temporary files
-      - calage-images:/var/www/html/i  # hosted images: never delete them
-
-volumes:
-  calage-data:
-  calage-images:
+      # The data/ and i/ folders of this checkout, as on shared hosting (ignored by git).
+      - ./data:/var/www/html/data # config.php, database, temporary files
+      - ./i:/var/www/html/i       # hosted images: never delete them
