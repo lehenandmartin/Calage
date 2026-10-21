@@ -35,7 +35,7 @@ test('config.php: path outside the application kept as is', function (): void {
     check(str_contains($php, "'database' => '/srv/prive/calage.sqlite'"));
 });
 
-test('config.php: stored in data/ (CALAGE_CONFIG), paths relative to that folder', function (): void {
+test('config.php: stored in data/, paths relative to that folder', function (): void {
     $root = realpath(temp_dir());
     mkdir("$root/data");
     $file = new ConfigFile("$root/data/config.php", $root);

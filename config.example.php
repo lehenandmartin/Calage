@@ -1,6 +1,6 @@
 <?php
 // Easiest: open Calage in a browser, the setup wizard writes config.php.
-// By hand: copy this file to config.php, then edit it; the password hash is generated with
+// By hand: copy this file to data/config.php, then edit it; the password hash is generated with
 // "php bin/hash-password.php". Afterwards, the Settings page edits this file.
 return [
     // Public URL of the application, without a trailing slash. May include a subfolder.
@@ -25,8 +25,8 @@ return [
     ],
 
     'paths' => [
-        'database' => __DIR__ . '/data/app.sqlite',
-        'tmp'      => __DIR__ . '/data/tmp', // sessions, upload chunks, pending imports
+        'database' => __DIR__ . '/app.sqlite',
+        'tmp'      => __DIR__ . '/tmp', // sessions, upload chunks, pending imports
     ],
 
     // Time zone of the displayed dates (dates are stored in UTC).

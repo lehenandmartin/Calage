@@ -385,7 +385,7 @@ return [
 
     // Manual setup
     'Last step: upload config.php' => 'Dernière étape : déposer config.php',
-    'The hosting does not let PHP write in the Calage folder. Copy the content below into a {config} file, upload it over FTP next to {index}, then reload this page.' => 'L’hébergement n’autorise pas PHP à écrire dans le dossier de Calage. Copiez le contenu ci-dessous dans un fichier {config}, déposez-le par FTP à côté de {index}, puis rechargez cette page.',
+    'The hosting does not let PHP write {config}. Copy the content below into this file, upload it over FTP into the {data} folder, then reload this page.' => 'L’hébergement n’autorise pas PHP à écrire {config}. Copiez le contenu ci-dessous dans ce fichier, déposez-le par FTP dans le dossier {data}, puis rechargez cette page.',
     'Content copied.' => 'Contenu copié.',
     'Copy the content' => 'Copier le contenu',
     'This content holds the password hash and, if you entered it, the SMTP password: do not share it.' => 'Ce contenu contient l’empreinte du mot de passe et, si vous l’avez renseigné, le mot de passe SMTP : ne le partagez pas.',

@@ -94,14 +94,14 @@ The name comes from printing: *calage* is the final press adjustment before the 
    git clone https://github.com/lehenandmartin/Calage.git
    ```
 2. Upload the files over FTP, at the root of a domain or in a subfolder. The included `.htaccess` blocks web access to everything that should stay private.
-3. Open the site in a browser: a setup wizard checks the environment (PHP extensions, write permissions), then asks for the language, the public address, the account and, optionally, the SMTP settings (with a test email). It writes `config.php` and logs you in. Run it right after uploading the files: until setup is done, anyone reaching the site could run it.
-4. If the host does not let PHP write into the Calage folder, the wizard shows the content of `config.php` for you to upload over FTP. You can also copy `config.example.php` to `config.php` and fill it in by hand (`php bin/hash-password.php` generates the password hash).
+3. Open the site in a browser: a setup wizard checks the environment (PHP extensions, write permissions), then asks for the language, the public address, the account and, optionally, the SMTP settings (with a test email). It writes `data/config.php` and logs you in. Run it right after uploading the files: until setup is done, anyone reaching the site could run it.
+4. If the host does not let PHP write `data/config.php`, the wizard shows its content for you to upload over FTP. You can also copy `config.example.php` to `data/config.php` and fill it in by hand (`php bin/hash-password.php` generates the password hash).
 
 After setup, the language, the address, the account and the SMTP settings can be changed from the Settings page.
 
-The `data/` (database, temporary files) and `i/` (hosted images) folders must be writable by PHP.
+Everything that is not code lives in two folders, which must be writable by PHP: `data/` (`config.php`, the SQLite database, temporary files) and `i/` (hosted images). Installs made before 1.2 keep their `config.php` next to `index.php`: it is still used as long as it is there.
 
-> **nginx**: `.htaccess` files are ignored. Deny web access to `data/`, `src/`, `templates/`, `lib/`, `bin/`, `tests/` and `config.php` in the server configuration, or move `data/` out of the web root through `paths` in `config.php`. The dashboard warns you if `data/` can be read from the web.
+> **nginx**: `.htaccess` files are ignored. Deny web access to `data/`, `src/`, `templates/`, `lib/`, `bin/`, `tests/` and `config.php` (older installs) in the server configuration, or move `data/` out of the web root through `paths` in `config.php`. The dashboard warns you if `data/` can be read from the web.
 
 ### Docker
 
@@ -124,7 +124,7 @@ To use another port, set `CALAGE_PORT` (in the shell or in a `.env` file next to
 | `data/` | `config.php`, the SQLite database (`app.sqlite`), temporary files (sessions, uploads) |
 | `i/` | hosted images: never delete them, emails already sent point to them |
 
-They are ignored by git, so `git pull` never touches them. In the image, `config.php` is written to `data/` instead of next to `index.php` (the `CALAGE_CONFIG` environment variable points to it), so the setup and the Settings survive a new container. The code is read-only for PHP; only `data/` and `i/` are writable. On start, the container puts back their `.htaccess` files if they are missing and gives the folders to the `www-data` user (uid 33): on a Linux server, `sudo` may be needed to edit their files from the host.
+They are ignored by git, so `git pull` never touches them, and the setup and the Settings survive a new container. The code is read-only for PHP; only `data/` and `i/` are writable. On start, the container puts back their `.htaccess` files if they are missing and gives the folders to the `www-data` user (uid 33): on a Linux server, `sudo` may be needed to edit their files from the host.
 
 To keep them elsewhere (another disk, a backed-up folder), change the left-hand side of the two `volumes` lines in `compose.yaml`, e.g. `/srv/calage/data:/var/www/html/data`.
 
@@ -153,7 +153,7 @@ docker compose start
 
 ### Updating
 
-On shared hosting, replace the files, keeping `config.php`, `data/` and `i/` (with Docker, see above). The database migrates itself on the next page load.
+On shared hosting, replace the files, keeping `data/` and `i/` (and `config.php` next to `index.php` for an install made before 1.2). With Docker, see above. The database migrates itself on the next page load.
 
 ### Local development
 

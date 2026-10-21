@@ -36,13 +36,13 @@ final class App
     }
 
     /**
-     * Location of config.php: next to index.php, unless the CALAGE_CONFIG environment variable
-     * points elsewhere (Docker: inside the data/ volume, so the file survives the container).
+     * Location of config.php: in data/, with the rest of what is not code (same layout on shared
+     * hosting and in Docker). Installs made before 1.2 keep theirs next to index.php.
      */
     public static function configPath(): string
     {
-        $path = getenv('CALAGE_CONFIG');
-        return is_string($path) && $path !== '' ? $path : APP_ROOT . '/config.php';
+        $legacy = APP_ROOT . '/config.php';
+        return is_file($legacy) ? $legacy : APP_ROOT . '/data/config.php';
     }
 
     /** True when config.php exists and defines an admin account. */

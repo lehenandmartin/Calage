@@ -117,8 +117,8 @@ share page, `/render`), the strict rule applies.
 
 ### Configuration
 
-No settings table: everything lives in a `config.php` file outside the public folder
-(or protected by `.htaccess`). A `config.example.php` is versioned, never `config.php`.
+No settings table: everything lives in a `config.php` file in `data/` (protected by `.htaccess`, writable
+by PHP, kept on updates with the database). A `config.example.php` is versioned, never `config.php`.
 
 ```php
 <?php
@@ -140,15 +140,16 @@ return [
     ],
     'share_page' => ['hide_dates' => false],
     'paths' => [
-        'database' => __DIR__ . '/data/app.sqlite',
-        'tmp'      => __DIR__ . '/data/tmp',
+        'database' => __DIR__ . '/app.sqlite',
+        'tmp'      => __DIR__ . '/tmp',
     ],
     'debug' => false,
 ];
 ```
 
-`config.php` sits next to `index.php`; only the `CALAGE_CONFIG` environment variable can move it (`App::configPath()`,
-used by the Docker image to keep it in the mounted `data/` folder). Paths below its folder are written relative to it.
+Location (decided, 1.2): `data/config.php`, the same on shared hosting and in Docker (`App::configPath()`). An install
+made before 1.2 has it next to `index.php`: when that file exists, it is used (read and written) instead, no migration.
+Paths below the folder of `config.php` are written relative to it (`__DIR__ . '/app.sqlite'`).
 
 Images are not configurable: they live in `i/` at the root of the application,
 to be served statically at `{base_url}/i/{hash}.{ext}`.
@@ -217,7 +218,7 @@ is missing). Under nginx, `.htaccess` files do not apply: either a server config
 `data/` must be moved out of the web root through `paths`; the dashboard warns when `data/` can be read from the web.
 
 ```
-index.php  .htaccess  config.php  config.example.php  schema.sql
+index.php  .htaccess  config.example.php  schema.sql
 assets/      interface CSS/JS (vendor/: bundled cheerio)
 i/           images by content hash (served statically, long cache)
 src/         App, Router, routes.php, Db, Session, Auth, Csrf, View, Lang, helpers.php
@@ -226,15 +227,15 @@ src/         App, Router, routes.php, Db, Session, Auth, Csrf, View, Lang, helpe
   lang/      fr.php, fr-js.php (French translation)
 templates/   PHP views
 lib/         bundled PHPMailer
-data/        app.sqlite, tmp/ (sessions, chunked uploads/, pending imports/, exports/)
+data/        config.php, app.sqlite, tmp/ (sessions, chunked uploads/, pending imports/, exports/)
 bin/         CLI scripts (hash-password.php)
 tests/       run.php + fixtures/
 Dockerfile  compose.yaml  docker/   optional Docker deployment (PHP + Apache, data/ and i/ mounted)
 ```
 
 Docker (optional, decided): it must never become a requirement; shared hosting stays the reference. The image
-uses Apache with the same `.htaccess` files, the code is read-only for PHP, the `data/` and `i/` folders of the checkout are mounted into the container,
-`CALAGE_CONFIG=/var/www/html/data/config.php`. `docker/entrypoint.sh` puts back the `.htaccess` / `probe.txt` of
+uses Apache with the same `.htaccess` files, the code is read-only for PHP, the `data/` and `i/` folders of the checkout are mounted into the container
+(no Docker-specific setting in the application). `docker/entrypoint.sh` puts back the `.htaccess` / `probe.txt` of
 an empty folder.
 
 Tests: `php tests/run.php` (with a filter: `php tests/run.php paths`). Each folder of

@@ -6,8 +6,8 @@
     </div>
     <section class="panel panel-lg stack">
         <div class="bar bar-warning" role="note"><?= icon('warning') ?>
-            <p class="bar-body"><?= __h('The hosting does not let PHP write in the Calage folder. Copy the content below into a {config} file, upload it over FTP next to {index}, then reload this page.', [
-                'config' => '<code>config.php</code>', 'index' => '<code>index.php</code>',
+            <p class="bar-body"><?= __h('The hosting does not let PHP write {config}. Copy the content below into this file, upload it over FTP into the {data} folder, then reload this page.', [
+                'config' => '<code>config.php</code>', 'data' => '<code>data/</code>',
             ]) ?></p></div>
         <textarea class="textarea mono" id="config-content" rows="18" readonly><?= e($configContent) ?></textarea>
         <div class="actions" style="justify-content: flex-end">

@@ -36,9 +36,6 @@ RUN rm -rf /var/www/html/docker \
 COPY docker/entrypoint.sh /usr/local/bin/calage-entrypoint
 RUN chmod +x /usr/local/bin/calage-entrypoint
 
-# config.php lives in the mounted data/ folder, so the setup wizard and the Settings page survive a new container.
-ENV CALAGE_CONFIG=/var/www/html/data/config.php
-
 VOLUME ["/var/www/html/data", "/var/www/html/i"]
 EXPOSE 80
 
