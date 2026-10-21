@@ -126,7 +126,18 @@ To use another port, set `CALAGE_PORT` (in the shell or in a `.env` file next to
 
 They are ignored by git, so `git pull` never touches them, and the setup and the Settings survive a new container. The code is read-only for PHP; only `data/` and `i/` are writable. On start, the container gives the folders to the `www-data` user (uid 33), and Calage puts back their `.htaccess` files if they are missing: on a Linux server, `sudo` may be needed to edit their files from the host.
 
-To keep them elsewhere (another disk, a backed-up folder), change the left-hand side of the two `volumes` lines in `compose.yaml`, e.g. `/srv/calage/data:/var/www/html/data`.
+To keep them elsewhere (another disk, a backed-up folder), set `CALAGE_DATA` and `CALAGE_IMAGES` to absolute folders of the host, e.g. in a `.env` file next to `compose.yaml`:
+```
+CALAGE_DATA=/srv/calage/data
+CALAGE_IMAGES=/srv/calage/i
+```
+
+**Portainer.** Create a stack from the Git repository:
+- *Repository URL*: `https://github.com/lehenandmartin/Calage`, *Repository reference*: `refs/heads/main` (or a release tag such as `refs/tags/v1.2.0`);
+- *Compose path*: `compose.yaml` (not the default `docker-compose.yml`);
+- *Environment variables*: `CALAGE_DATA` and `CALAGE_IMAGES` with absolute folders of the host, e.g. `/srv/calage/data` and `/srv/calage/i`, and `CALAGE_PORT` if 8080 is taken. They are required with Portainer: the repository is cloned inside the Portainer container, so the default `./data` and `./i` would not be folders you can reach. Empty folders are fine, they are created if missing.
+
+Portainer builds the image on the Docker host. To update, use *Pull and redeploy*: the image is rebuilt from the new code, `data/` and `i/` are kept.
 
 **HTTPS and reverse proxy.** The container speaks plain HTTP. Put it behind your usual reverse proxy (Caddy, Traefik, nginx…) that handles the certificate, and serve it at the root of a domain or subdomain: the subfolder install (`domain.com/calage`) is meant for shared hosting, not for the container. The proxy must pass the `Host` header and `X-Forwarded-Proto: https` (Calage relies on it for secure session cookies) and accept large enough requests (upload chunks go up to 4 MB; e.g. `client_max_body_size 64m;` with nginx). Example with Caddy:
 ```

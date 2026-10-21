@@ -232,7 +232,7 @@ lib/         bundled PHPMailer
 data/        config.php, app.sqlite, tmp/ (sessions, chunked uploads/, pending imports/, exports/)
 bin/         CLI scripts (hash-password.php)
 tests/       run.php + fixtures/
-Dockerfile  compose.yaml  docker/   optional Docker deployment (PHP + Apache, data/ and i/ mounted)
+Dockerfile  compose.yaml  docker/   optional Docker deployment (PHP + Apache, data/ and i/ mounted; CALAGE_DATA / CALAGE_IMAGES move them)
 ```
 
 Docker (optional, decided): it must never become a requirement; shared hosting stays the reference. The image

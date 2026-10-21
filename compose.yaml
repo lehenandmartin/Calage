@@ -3,12 +3,14 @@ services:
   calage:
     build: .
     image: calage:latest
+    pull_policy: build # always built from this checkout, never pulled (Portainer redeploys included)
     restart: unless-stopped
     ports:
       - "${CALAGE_PORT:-8080}:80"
     environment:
       TZ: ${TZ:-Europe/Paris}
     volumes:
-      # The data/ and i/ folders of this checkout, as on shared hosting (ignored by git).
-      - ./data:/var/www/html/data # config.php, database, temporary files
-      - ./i:/var/www/html/i       # hosted images: never delete them
+      # By default the data/ and i/ folders of this checkout, as on shared hosting (ignored by git).
+      # CALAGE_DATA and CALAGE_IMAGES set absolute host folders instead (Portainer, other disk…).
+      - ${CALAGE_DATA:-./data}:/var/www/html/data # config.php, database, temporary files
+      - ${CALAGE_IMAGES:-./i}:/var/www/html/i     # hosted images: never delete them
