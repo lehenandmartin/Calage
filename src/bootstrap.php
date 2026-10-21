@@ -22,6 +22,9 @@ require __DIR__ . '/helpers.php';
 
 App::init();
 
+// data/ and i/ keep their .htaccess even when an FTP client skipped hidden files.
+Calage\Storage\Protection::restore(APP_ROOT);
+
 // Interface language: the one saved in the settings, or the browser's until Calage is set up.
 // The share page and the setup wizard pick their own (ClientController, SetupController).
 Lang::set(App::isConfigured() ? Lang::configured() : Lang::fromBrowser());

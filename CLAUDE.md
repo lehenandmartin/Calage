@@ -214,7 +214,9 @@ subfolder** (`https://domain.com/calage/`). No URL may be hard-coded:
 Only `index.php`, `assets/` and `i/` can be reached from the web. Everything else (`src/`, `templates/`,
 `lib/`, `data/`, `bin/`, `tests/`, `config.php`, `*.sql`, `*.md`) is blocked **twice**: by the root
 `.htaccess` and by a "deny" `.htaccess` in each internal folder (in case `mod_rewrite`
-is missing). Under nginx, `.htaccess` files do not apply: either a server config is needed, or
+is missing). The files of the folders Calage writes into (`data/.htaccess`, `data/probe.txt`, `i/.htaccess`) are put back
+on every request when missing (`Storage\Protection`, copies checked against the repository by `tests/ProtectionTest.php`):
+an FTP client that skips hidden files, an empty folder mounted by Docker. Under nginx, `.htaccess` files do not apply: either a server config is needed, or
 `data/` must be moved out of the web root through `paths`; the dashboard warns when `data/` can be read from the web.
 
 ```
@@ -223,7 +225,7 @@ assets/      interface CSS/JS (vendor/: bundled cheerio)
 i/           images by content hash (served statically, long cache)
 src/         App, Router, routes.php, Db, Session, Auth, Csrf, View, Lang, helpers.php
   Controllers/  Html/ (scanner, path resolution, rewriting, rendering)
-  Mjml.php  Storage/ (ImageStore, Package = pending import, ChunkedUpload = chunked upload)  Import/ (Importer)  Export/ (Exporter)  Repo/
+  Mjml.php  Storage/ (ImageStore, Package = pending import, ChunkedUpload = chunked upload, Protection)  Import/ (Importer)  Export/ (Exporter)  Repo/
   lang/      fr.php, fr-js.php (French translation)
 templates/   PHP views
 lib/         bundled PHPMailer
@@ -235,8 +237,8 @@ Dockerfile  compose.yaml  docker/   optional Docker deployment (PHP + Apache, da
 
 Docker (optional, decided): it must never become a requirement; shared hosting stays the reference. The image
 uses Apache with the same `.htaccess` files, the code is read-only for PHP, the `data/` and `i/` folders of the checkout are mounted into the container
-(no Docker-specific setting in the application). `docker/entrypoint.sh` puts back the `.htaccess` / `probe.txt` of
-an empty folder.
+(no Docker-specific setting in the application). `docker/entrypoint.sh` only gives `data/` and `i/`
+to `www-data`.
 
 Tests: `php tests/run.php` (with a filter: `php tests/run.php paths`). Each folder of
 `tests/fixtures/` is an import: `expected.json` describes the expected images, `expected.html` the HTML

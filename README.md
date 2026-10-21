@@ -93,7 +93,7 @@ The name comes from printing: *calage* is the final press adjustment before the 
    ```bash
    git clone https://github.com/lehenandmartin/Calage.git
    ```
-2. Upload the files over FTP, at the root of a domain or in a subfolder. The included `.htaccess` blocks web access to everything that should stay private.
+2. Upload the files over FTP, at the root of a domain or in a subfolder. The included `.htaccess` blocks web access to everything that should stay private. Make sure your FTP client sends hidden files (`.htaccess`): Calage puts back those of `data/` and `i/` by itself, not the others.
 3. Open the site in a browser: a setup wizard checks the environment (PHP extensions, write permissions), then asks for the language, the public address, the account and, optionally, the SMTP settings (with a test email). It writes `data/config.php` and logs you in. Run it right after uploading the files: until setup is done, anyone reaching the site could run it.
 4. If the host does not let PHP write `data/config.php`, the wizard shows its content for you to upload over FTP. You can also copy `config.example.php` to `data/config.php` and fill it in by hand (`php bin/hash-password.php` generates the password hash).
 
@@ -124,7 +124,7 @@ To use another port, set `CALAGE_PORT` (in the shell or in a `.env` file next to
 | `data/` | `config.php`, the SQLite database (`app.sqlite`), temporary files (sessions, uploads) |
 | `i/` | hosted images: never delete them, emails already sent point to them |
 
-They are ignored by git, so `git pull` never touches them, and the setup and the Settings survive a new container. The code is read-only for PHP; only `data/` and `i/` are writable. On start, the container puts back their `.htaccess` files if they are missing and gives the folders to the `www-data` user (uid 33): on a Linux server, `sudo` may be needed to edit their files from the host.
+They are ignored by git, so `git pull` never touches them, and the setup and the Settings survive a new container. The code is read-only for PHP; only `data/` and `i/` are writable. On start, the container gives the folders to the `www-data` user (uid 33), and Calage puts back their `.htaccess` files if they are missing: on a Linux server, `sudo` may be needed to edit their files from the host.
 
 To keep them elsewhere (another disk, a backed-up folder), change the left-hand side of the two `volumes` lines in `compose.yaml`, e.g. `/srv/calage/data:/var/www/html/data`.
 

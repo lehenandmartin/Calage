@@ -25,13 +25,9 @@ COPY docker/apache.conf /etc/apache2/conf-enabled/calage.conf
 
 # Code owned by root, read-only for PHP; only data/ and i/ are writable (see the entrypoint).
 COPY . /var/www/html/
-# The .htaccess and probe files of data/ and i/, put back by the entrypoint when an empty mounted folder hides them.
 RUN rm -rf /var/www/html/docker \
     && chown root:root /var/www/html && chmod 755 /var/www/html \
-    && chown www-data:www-data /var/www/html/data /var/www/html/i \
-    && mkdir -p /usr/local/share/calage \
-    && cp -a /var/www/html/data /usr/local/share/calage/data \
-    && cp -a /var/www/html/i /usr/local/share/calage/i
+    && chown www-data:www-data /var/www/html/data /var/www/html/i
 
 COPY docker/entrypoint.sh /usr/local/bin/calage-entrypoint
 RUN chmod +x /usr/local/bin/calage-entrypoint
