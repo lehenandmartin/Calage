@@ -385,7 +385,7 @@ HTML checked to be identical to that of the `mjml` package under Node.
 
 ## Version
 
-`App::VERSION` (semantic versioning, currently 1.1.0) and `App::REPOSITORY`
+`App::VERSION` (semantic versioning, currently 1.2.0) and `App::REPOSITORY`
 (https://github.com/lehenandmartin/Calage). The version is shown in the back office only (bottom of the folder
 pane, link to the repository, and "About" section of Settings); the share page only carries
 the link to the repository ("Shared with Calage"), never the version.
